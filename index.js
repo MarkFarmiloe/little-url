@@ -9,7 +9,7 @@ var app = express();
 
 app.set('port', (process.env.PORT || 8080));
 
-var dbUrl = 'mongodb://localhost:27017/fcc';
+var dbUrl = process.env.MONGOLAB_URI || 'mongodb://localhost:27017/fcc';
 
 app.use(express.static(path.join(__dirname, 'public')));
 
