@@ -87,7 +87,7 @@ app.get('/:shortUrl', function (req, res) {
     var shortUrl = Number(req.params.shortUrl);
     mongo.connect(dbUrl, function (err, db) {
         if (err) {
-            res.end('Link database currently unavailable. Please try again later.');
+            res.end('Link database currently unavailable. Please try again later.' + err);
             return;
         }
         var coll = db.collection('urls');
