@@ -42,18 +42,21 @@ app.get('/new/*', function (req, res) {
     mongo.connect(dbUrl, function (err, db) {
         if (err) {
             res.end('Link database currently unavailable. Please try again later.');
+            return;
         }
         var coll = db.collection('urls');
         coll.find({ 'original_url': longUrl }, { original_url: 1, short_url: 1, _id: 0 }).toArray(function(err, links) {
             if (err) {
                 db.close();
                 res.end('Internal database error. Please try again later.');
+                return;
             }
             if (links.length > 0) {
                 link = links[0];
                 console.log('Found: ' + JSON.stringify(link));
                 db.close();
                 res.end(JSON.stringify(link));
+                return;
             }
             coll.aggregate([
                 { $match: {} },
@@ -62,6 +65,7 @@ app.get('/new/*', function (req, res) {
                     if (err) {
                         db.close();
                         res.end('Internal database error. Please try again later.');
+                        return;
                     }
                     if (results.length > 0) {
                         console.log(results[0]);
@@ -84,18 +88,21 @@ app.get('/:shortUrl', function (req, res) {
     mongo.connect(dbUrl, function (err, db) {
         if (err) {
             res.end('Link database currently unavailable. Please try again later.');
+            return;
         }
         var coll = db.collection('urls');
         coll.find({ 'short_url': shortUrl }, { original_url: 1, short_url: 1, _id: 0 }).toArray(function(err, links) {
             if (err) {
                 db.close();
                 res.end('Internal database error. Please try again later.');
+                return;
             }
             if (links.length > 0) {
                 var link = links[0];
                 console.log('Found: ' + JSON.stringify(link));
                 db.close();
                 res.redirect(link.original_url);
+                return;
             }
             db.close();
             res.end('Short link not found.');
